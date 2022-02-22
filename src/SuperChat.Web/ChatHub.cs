@@ -38,7 +38,8 @@ namespace SuperChat.Web
                 }
                 else
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", "Mr. Robot", "Invalid command");
+                    var client = Clients.Client(connectionId);
+                    await client.SendAsync("ReceiveMessage", "Mr. Robot", "Invalid command", actualDate);
                 }
             }
             else
