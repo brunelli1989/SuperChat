@@ -29,12 +29,20 @@ namespace SuperChat.Domain.Services
         public async Task CalculateQuote(CalculateQuoteCommand command)
         {
             var request = _mapper.Map<GetQuote.Request>(command);
+            QuoteCalculatedEvent quoteCalculatedEvent;
 
-            var response = await _stooqExternalService.Get(request);
+            try
+            {
+                var response = await _stooqExternalService.Get(request);
 
-            var first = response.FirstOrDefault();
+                var first = response.FirstOrDefault();
 
-            var quoteCalculatedEvent = _mapper.Map<QuoteCalculatedEvent>(first);
+                 quoteCalculatedEvent = _mapper.Map<QuoteCalculatedEvent>(first);
+            }
+            catch
+            {
+                quoteCalculatedEvent = new QuoteCalculatedEvent { Success = false };
+            }
 
             _mapper.Map(command, quoteCalculatedEvent);
 

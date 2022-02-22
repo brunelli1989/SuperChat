@@ -43,7 +43,11 @@ namespace SuperChat.Web
 
             var client = _hubContext.Clients.Client(quoteCalculatedEvent.CorrelationId);
 
-            await client.SendAsync("ReceiveMessage", "Mr. Robot", $"{quoteCalculatedEvent.Symbol} quote is ${quoteCalculatedEvent.High} per share", quoteCalculatedEvent.RequestDate);
+            string message = quoteCalculatedEvent.Success
+                ? $"{quoteCalculatedEvent.Symbol} quote is ${quoteCalculatedEvent.High} per share"
+                : $"Symbol {quoteCalculatedEvent.Symbol} not found";
+
+            await client.SendAsync("ReceiveMessage", "Mr. Robot", message, quoteCalculatedEvent.RequestDate);
 
             await args.CompleteMessageAsync(args.Message);
         }

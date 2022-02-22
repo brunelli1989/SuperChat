@@ -10,8 +10,11 @@ namespace SuperChat.Domain.AutoMapper
         public AutoMapperProfile()
         {
             CreateMap<CalculateQuoteCommand, GetQuote.Request>();
+            
             CreateMap<GetQuote.Response, QuoteCalculatedEvent>();
-            CreateMap<CalculateQuoteCommand, QuoteCalculatedEvent>();
+            
+            CreateMap<CalculateQuoteCommand, QuoteCalculatedEvent>()
+                .ForMember(x => x.Symbol, d => d.MapFrom(m => m.StockCode));
         }
     }
 }

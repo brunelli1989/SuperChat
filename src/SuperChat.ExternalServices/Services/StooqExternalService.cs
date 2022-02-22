@@ -5,6 +5,7 @@ using SuperChat.ExternalServices.Models;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace SuperChat.ExternalServices.Services
             _url = configuration.GetSection("Stooq:RequestUri").Get<string>();
         }
 
-        public async Task<IEnumerable<GetQuote.Response>> Get(GetQuote.Request request)
+        public async Task<List<GetQuote.Response>> Get(GetQuote.Request request)
         {
             using (var stream = await _httpClient.GetStreamAsync(string.Format(_url, request.StockCode)))
             using (var reader = new StreamReader(stream))
@@ -29,7 +30,7 @@ namespace SuperChat.ExternalServices.Services
             {
                 csv.Context.RegisterClassMap<GetQuoteResponseMap>();
                 var records = csv.GetRecords<GetQuote.Response>();
-                return records;
+                return records.ToList();
             }
         }
     }

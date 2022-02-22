@@ -6,6 +6,6 @@ namespace SuperChat.ExternalServices.Contracts
 {
     public interface IStooqExternalService
     {
-        Task<IEnumerable<GetQuote.Response>> Get(GetQuote.Request request);
+        Task<List<GetQuote.Response>> Get(GetQuote.Request request);
     }
 }

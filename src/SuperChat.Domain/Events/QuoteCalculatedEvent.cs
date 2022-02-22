@@ -14,6 +14,12 @@ namespace SuperChat.Domain.Events
         public double Close { get; set; }
         public double Volume { get; set; }
 
+        public bool Success { get; set; }
         public DateTime RequestDate { get; set; }
+
+        public QuoteCalculatedEvent()
+        {
+            Success = true;
+        }
     }
 }
