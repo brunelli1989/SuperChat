@@ -1,4 +1,5 @@
-﻿using SuperChat.ExternalServices.Contracts;
+﻿using Microsoft.Extensions.Configuration;
+using SuperChat.ExternalServices.Contracts;
 using SuperChat.ExternalServices.Models;
 using System;
 using System.Collections.Generic;
@@ -13,16 +14,17 @@ namespace SuperChat.ExternalServices.Services
     public class StooqExternalService : IStooqExternalService
     {
         private readonly HttpClient _httpClient;
-        const string Url = "https://stooq.com/q/l/?s={0}&f=sd2t2ohlcv&h&e=csv";
+        private readonly string _url;
 
-        public StooqExternalService(IHttpClientFactory httpClientFactory)
+        public StooqExternalService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient(nameof(StooqExternalService));
+            _url = configuration.GetSection("Stooq:RequestUri").Get<string>();
         }
 
         public async Task<List<GetQuote.Response>> Get(GetQuote.Request request)
         {
-            var byteArray = await _httpClient.GetByteArrayAsync(string.Format(Url, request.StockCode));
+            var byteArray = await _httpClient.GetByteArrayAsync(string.Format(_url, request.StockCode));
 
             var csv = Encoding.UTF8.GetString(byteArray);
 

@@ -31,7 +31,8 @@ namespace SuperChat.Web
                     var command = new CalculateQuoteCommand
                     {
                         CorrelationId = connectionId,
-                        StockCode = stockCode
+                        StockCode = stockCode,
+                        RequestDate = actualDate
                     };
                     await service.Send(command);
                 }

@@ -7,6 +7,7 @@ namespace SuperChat.ExternalServices.Models
         public class Request
         {
             public string StockCode { get; set; }
+            public DateTime RequestDate { get; set; }
         }
 
         public class Response

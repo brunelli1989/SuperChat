@@ -13,5 +13,7 @@ namespace SuperChat.Domain.Events
         public double Low { get; set; }
         public double Close { get; set; }
         public double Volume { get; set; }
+
+        public DateTime RequestDate { get; set; }
     }
 }
