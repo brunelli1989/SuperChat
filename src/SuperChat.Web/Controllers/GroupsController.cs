@@ -4,23 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using SuperChat.Web.Models;
 using SuperChat.Web.Repositories;
 using System;
+using System.Threading.Tasks;
 
 namespace SuperChat.Web.Controllers
 {
     [Authorize]
     public class GroupsController : Controller
     {
-        private readonly IGroupsRepository _groupsRepository;
+        private readonly IGroupRepository _groupsRepository;
 
-        public GroupsController(IGroupsRepository groupsRepository)
+        public GroupsController(IGroupRepository groupsRepository)
         {
             _groupsRepository = groupsRepository;
         }
 
         // GET: GroupsController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            ViewData.Model = _groupsRepository.Get();
+            ViewData.Model = await _groupsRepository.Get();
 
             return View();
         }
@@ -34,29 +35,24 @@ namespace SuperChat.Web.Controllers
         // POST: GroupsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(IFormCollection collection)
         {
-            try
+            var model = new GroupViewModel
             {
-                var model = new GroupViewModel
-                {
-                    Name = collection["Name"]
-                };
+                Name = collection["Name"]
+            };
 
-                _groupsRepository.Add(model);
+            await _groupsRepository.Add(model);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _groupsRepository.Commit();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: GroupsController/Edit/5
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            ViewData.Model = _groupsRepository.Get(id);
+            ViewData.Model = await _groupsRepository.Get(id);
 
             return View();
         }
@@ -64,43 +60,29 @@ namespace SuperChat.Web.Controllers
         // POST: GroupsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, IFormCollection collection)
+        public async Task<ActionResult> Edit(Guid id, IFormCollection collection)
         {
-            try
+            var viewModel = new GroupViewModel
             {
-                var model = _groupsRepository.Get(id);
+                Id = id,
+                Name = collection["Name"]
+            };
+            
+            await _groupsRepository.Update(viewModel);
 
-                model.Name = collection["Name"];
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: GroupsController/Delete/5
-        public ActionResult Delete(Guid id)
-        {
-            _groupsRepository.Remove(id);
+            await _groupsRepository.Commit();
 
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: GroupsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id, IFormCollection collection)
+        // GET: GroupsController/Delete/5
+        public async Task<ActionResult> Delete(Guid id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _groupsRepository.Remove(id);
+
+            await _groupsRepository.Commit();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

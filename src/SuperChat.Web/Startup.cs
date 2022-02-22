@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SuperChat.Web.AutoMapper;
 using SuperChat.Web.Bus;
 using SuperChat.Web.Data;
 using SuperChat.Web.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SuperChat.Web
 {
@@ -51,10 +53,14 @@ namespace SuperChat.Web
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddScoped<IGroupsRepository, GroupsRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddSingleton(x => new ServiceBusClient(Configuration.GetConnectionString("AzureServiceBus")));
             services.AddHostedService<ServiceBusHostedService>();
             services.AddScoped<IServiceBus, ServiceBus>();
+
+            services.AddAutoMapper(
+                typeof(AutoMapperProfile)
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
