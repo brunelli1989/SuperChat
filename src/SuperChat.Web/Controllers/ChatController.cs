@@ -10,7 +10,7 @@ namespace SuperChat.Web.Controllers
     {
         public async Task<IActionResult> Join(string id)
         {
-            return View(nameof(Index));
+            return await Task.FromResult(View(nameof(Index)));
         }
     }
 }
