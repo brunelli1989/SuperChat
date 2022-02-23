@@ -1,8 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Newtonsoft.Json;
 using SuperChat.Domain.Contracts;
 using SuperChat.Domain.Events;
-using System.Text;
+using System;
 using System.Threading.Tasks;
 
 namespace SuperChat.Domain.Bus
@@ -21,11 +20,7 @@ namespace SuperChat.Domain.Bus
         {
             var sender = _serviceBusClient.CreateSender(QUEUE_NAME);
 
-            var json = JsonConvert.SerializeObject(quoteCalculatedEvent);
-
-            var body = Encoding.UTF8.GetBytes(json);
-
-            var message = new ServiceBusMessage(body);
+            var message = new ServiceBusMessage(new BinaryData(quoteCalculatedEvent));
 
             await sender.SendMessageAsync(message);
 
