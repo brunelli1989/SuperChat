@@ -16,6 +16,7 @@ namespace SuperChat.Web.Data
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new GroupEntityTypeConfiguration());
+            builder.ApplyConfiguration(new MessageEntityTypeConfiguration());
         }
     }
 }

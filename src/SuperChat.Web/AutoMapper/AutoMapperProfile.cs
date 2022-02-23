@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SuperChat.Web.Entities;
+using SuperChat.Web.Events;
 using SuperChat.Web.Models;
 
 namespace SuperChat.Web.AutoMapper
@@ -10,6 +11,11 @@ namespace SuperChat.Web.AutoMapper
         {
             CreateMap<Group, GroupViewModel>()
                 .ReverseMap();
+
+            CreateMap<Message, MessageViewModel>()
+                .ReverseMap();
+
+            CreateMap<MessageReceivedEvent, MessageViewModel>();
         }
     }
 }

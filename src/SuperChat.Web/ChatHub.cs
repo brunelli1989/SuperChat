@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SuperChat.Domain.Commands;
 using SuperChat.Web.Bus;
+using SuperChat.Web.Events;
 using System;
 using System.Threading.Tasks;
 
@@ -16,18 +17,19 @@ namespace SuperChat.Web
             _services = services;
         }
 
-        public async Task SendMessage(string groupId, string message, DateTime actualDate)
+        public async Task SendMessage(Guid groupId, string message, DateTime actualDate)
         {
             var name = Context.User.Identity.Name;
-            var group = Clients.Group(groupId);
+            var group = Clients.Group(groupId.ToString());
             var connectionId = GetConnectionId();
+
+            using var scope = _services.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IServiceBus>();
 
             if (IsCommand(message))
             {
                 if (IsValidCommand(message, out string stockCode))
                 {
-                    using var scope = _services.CreateScope();
-                    var service = scope.ServiceProvider.GetRequiredService<IServiceBus>();
                     var command = new CalculateQuoteCommand
                     {
                         CorrelationId = connectionId,
@@ -45,6 +47,8 @@ namespace SuperChat.Web
             else
             {
                 await group.SendAsync("ReceiveMessage", name, message, actualDate);
+                var messageReceived = new MessageReceivedEvent { UserName = name, Text = message, Date = actualDate, GroupId = groupId };
+                await service.Publish(messageReceived);
             }
         }
 

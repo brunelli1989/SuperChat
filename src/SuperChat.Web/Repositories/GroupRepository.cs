@@ -5,7 +5,6 @@ using SuperChat.Web.Entities;
 using SuperChat.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperChat.Web.Repositories
@@ -54,7 +53,6 @@ namespace SuperChat.Web.Repositories
         {
             var entities = await _applicationDbContext
                 .Set<Group>()
-                .Take(50)
                 .ToListAsync();
 
             var viewModels = _mapper.Map<List<GroupViewModel>>(entities);

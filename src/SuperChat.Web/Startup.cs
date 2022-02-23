@@ -12,7 +12,6 @@ using SuperChat.Web.AutoMapper;
 using SuperChat.Web.Bus;
 using SuperChat.Web.Data;
 using SuperChat.Web.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SuperChat.Web
 {
@@ -54,8 +53,11 @@ namespace SuperChat.Web
             });
 
             services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+
             services.AddSingleton(x => new ServiceBusClient(Configuration.GetConnectionString("AzureServiceBus")));
-            services.AddHostedService<ServiceBusHostedService>();
+            services.AddHostedService<QuoteCalculatedServiceBusHostedService>();
+            services.AddHostedService<MessageReceivedServiceBusHostedService>();
             services.AddScoped<IServiceBus, ServiceBus>();
 
             services.AddAutoMapper(
